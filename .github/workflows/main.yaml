@@ -18,28 +18,28 @@ jobs:
         run: heroku container:login
 
       - name: build registry
-        run: docker build -t registry.heroku.com/ttlsh/web registry
+        run: docker build -t registry.heroku.com/uffizzi-ttlsh/web registry
 
       - name: push registry
-        run: docker push registry.heroku.com/ttlsh/web
+        run: docker push registry.heroku.com/uffizzi-ttlsh/web
 
       - name: release registry
-        run: heroku container:release -a ttlsh web
+        run: heroku container:release -a uffizzi-ttlsh web
 
       - name: build hooks
-        run: docker build -f hooks/Dockerfile.hooks -t registry.heroku.com/ttlsh-hooks/web hooks
+        run: docker build -f hooks/Dockerfile.hooks -t registry.heroku.com/uffizzi-ttlsh-hooks/web hooks
 
       - name: push hooks
-        run: docker push registry.heroku.com/ttlsh-hooks/web
+        run: docker push registry.heroku.com/uffizzi-ttlsh-hooks/web
 
       - name: release hooks
-        run: heroku container:release -a ttlsh-hooks web
+        run: heroku container:release -a uffizzi-ttlsh-hooks web
 
       - name: build reaper
-        run: docker build -f hooks/Dockerfile.reap -t registry.heroku.com/ttlsh-hooks/reap hooks
+        run: docker build -f hooks/Dockerfile.reap -t registry.heroku.com/uffizzi-ttlsh-hooks/reap hooks
 
       - name: push reaper
-        run: docker push registry.heroku.com/ttlsh-hooks/reap
+        run: docker push registry.heroku.com/uffizzi-ttlsh-hooks/reap
 
       - name: release reaper
-        run: heroku container:release -a ttlsh-hooks reap
+        run: heroku container:release -a uffizzi-ttlsh-hooks reap
