@@ -1,14 +1,15 @@
-version: 2
+# version: 2
 
-updates:
+# updates:
 
-  # # Npm
-  - package-ecosystem: "npm"
-    directory: "/cloudflare"
-    schedule:
-      interval: "daily"
+#   # # Npm
+#   - package-ecosystem: "npm"
+#     directory: "/cloudflare"
+#     schedule:
+#       interval: "daily"
 
-  - package-ecosystem: "npm"
-    directory: "/hooks"
-    schedule:
-      interval: "daily"
+#   - package-ecosystem: "npm"
+#     directory: "/hooks"
+#     schedule:
+#       interval: "daily"
+ 
