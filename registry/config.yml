@@ -8,7 +8,7 @@ storage:
     enabled: true
 
   gcs:
-    bucket: replreg
+    bucket: __GCS_BUCKET__
     keyfile: /etc/gcs.json
     rootdirectory: /
 

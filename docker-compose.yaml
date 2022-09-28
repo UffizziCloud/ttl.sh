@@ -1,0 +1,36 @@
+services:
+  redis:
+    image: redis:latest
+
+  registry:
+    build:
+      context: ./registry
+    environment:
+      PORT: 5000
+      HOOK_TOKEN: deleteme
+      HOOK_URI: 'hooks'
+      REPLREG_HOST: 'localhost:5000'
+      REPLREG_SECRET: deleteme
+      GCS_BUCKET: uffizzi-ephemeron
+      GCS_KEY_ENCODED: 
+    ports:
+      - "5000:5000"
+
+  hooks:
+    build:
+      context: ./hooks
+      dockerfile: Dockerfile.hooks
+    environment:
+      PORT: 8000
+      NODE_ENV: development
+      HOOK_TOKEN: deleteme
+      REDISCLOUD_URL: redis://redis/
+
+  reaper:
+    build:
+      context: ./hooks
+      dockerfile: Dockerfile.reap
+    environment:
+      PORT: 8088
+      NODE_ENV: development
+      REDISCLOUD_URL: redis://redis/
