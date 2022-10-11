@@ -5,6 +5,11 @@ import * as redis from "redis";
 import { promisify } from "util";
 import * as rp from "request-promise";
 
+let registryURL = process.env.REGISTRY_URL;
+if (registryURL == null || registryURL == "") {
+  registryURL = "https://ttl.sh"
+}
+
 const client = redis.createClient({url: process.env["REDISCLOUD_URL"]});
 const smembersAsync = promisify(client.smembers).bind(client);
 const sremAsync = promisify(client.srem).bind(client);
@@ -76,10 +81,12 @@ async function reapExpiredImages() {
         "Accept": "application/vnd.docker.distribution.manifest.v2+json",
       };
 
+      console.log(`querying ${image}`);
+
       // Get the manifest from the tag
       const getOptions = {
         method: "HEAD",
-        uri: `https://ttl.sh/v2/${imageAndTag[0]}/manifests/${imageAndTag[1]}`,
+        uri: `${registryURL}/v2/${imageAndTag[0]}/manifests/${imageAndTag[1]}`,
         headers,
         resolveWithFullResponse: true,
         simple: false,
@@ -92,7 +99,9 @@ async function reapExpiredImages() {
         continue;
       }
 
-      const deleteURI = `https://ttl.sh/v2/${imageAndTag[0]}/manifests/${getResponse.headers.etag.replace(/"/g,"")}`;
+      const deleteURI = `${registryURL}/v2/${imageAndTag[0]}/manifests/${getResponse.headers.etag.replace(/"/g,"")}`;
+
+      //console.log(`deleting ${deleteURI}`);
 
       // Remove from the registry
       const options = {
