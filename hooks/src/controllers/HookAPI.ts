@@ -19,8 +19,8 @@ const saddAsync = promisify(client.sadd).bind(client);
 const hsetAsync = promisify(client.hset).bind(client);
 
 const durationRegex = /^(?=\d+[ywdhms])(( ?\d+y)?(?!\d))?(( ?\d+w)?(?!\d))?(( ?\d+d)?(?!\d))?(( ?\d+h)?(?!\d))?(( ?\d+m)?(?!\d))?(( ?\d+s)?(?!\d))?( ?\d+ms)?$/;
-const defaultDuration = 24 * 60 * 60 * 1000; // 24h
-const maxDuration = 24 * 60 * 60 * 1000; // 24h
+const defaultDuration = 60 * 24 * 60 * 60 * 1000; // 60d
+const maxDuration = 60 * 24 * 60 * 60 * 1000; // 60d
 
 @Controller("/v1/hook")
 export class HookAPI {
