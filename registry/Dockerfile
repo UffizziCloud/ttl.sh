@@ -1,4 +1,4 @@
-FROM registry:2.7.1
+FROM registry:2.8
 
 ADD ./entrypoint.sh /heroku-entrypoint.sh
 ADD ./config.yml /etc/docker/registry/config.yml
