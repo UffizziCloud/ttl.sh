@@ -33,6 +33,8 @@ const sremAsync = promisify(client.srem).bind(client);
 const hgetAsync = promisify(client.hget).bind(client);
 const delAsync = promisify(client.del).bind(client);
 
+const tagRegex = new RegExp("docker/registry/v2/repositories/(.*)/_manifests/tags/(.*)/current/link");
+
 exports.name = "prune";
 exports.describe = "find and prune untracked tags";
 exports.builder = {
@@ -84,13 +86,21 @@ async function pruneOrphanedTags() {
 //  const images = await smembersAsync("current.images");
 //  console.log(`   there are ${images.length} total images to evaluate`);
   const getFilesOptions = {
-    prefix: "docker/registry/v2/repositories/",
+    matchGlob: "docker/registry/v2/repositories/*/_manifests/tags/*/current/link",
   };
-  const [files] = await bucket.getFiles(getFilesOptions);
-  console.log('Files:');
-  files.forEach(file => {
-    console.log(file.name);
-  });
+  bucket.getFilesStream(getFilesOptions)
+    .on('error', (err) => {
+      return console.error(err.toString());
+    })
+    .on('data', (file) => {
+      console.log(file.name);
+      const match = file.name.match(tagRegex);
+      const tag = `${match[1]}:${match[2]}`;
+      console.log(tag);
+    })
+    .on('end', () => {
+      return console.log("stream ended.");
+    });
 //  for (const image of images) {
 //    try {
 //      const expireAt = await hgetAsync(image, "expires");
