@@ -1,4 +1,4 @@
-FROM node:10 as deps
+FROM node:14 as deps
 ADD ./package.json /src/package.json
 ADD ./Makefile /src/Makefile
 ADD . /src

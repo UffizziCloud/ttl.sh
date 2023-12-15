@@ -8,12 +8,18 @@ import * as rp from "request-promise";
 const {Storage} = require('@google-cloud/storage');
 
 // Decode GCP Service Account key.
-let gcsKeyBuffer = Buffer.from(process.env.GCS_KEY_ENCODED, "utf8");
-let gcsKeyDecoded = gcsKeyBuffer.toString("base64");
+let gcsKeyEncoded = process.env.GCS_KEY_ENCODED;
+if (gcsKeyEncoded == null || gcsKeyEncoded == "") {
+  console.log("need environment variable GCS_KEY_ENCODED base64 encoded JSON of service account key.");
+  gcsKeyEncoded = "e30=" // empty JSON object
+}
+let gcsKeyBuffer = Buffer.from(gcsKeyEncoded, "base64");
+let gcsKeyDecoded = gcsKeyBuffer.toString("ascii");
 const gcsKey = JSON.parse(gcsKeyDecoded);
 
 // Create a client with credentials passed by value as a JavaScript object
-const storage = new Storage(gcsKey);
+const storage = new Storage({credentials: gcsKey});
+
 const bucket = storage.bucket(process.env.GCS_BUCKET);
 
 let registryURL = process.env.REGISTRY_URL;
@@ -78,7 +84,7 @@ async function pruneOrphanedTags() {
 //  const images = await smembersAsync("current.images");
 //  console.log(`   there are ${images.length} total images to evaluate`);
   const getFilesOptions = {
-    matchGlob: "docker/registry/v2/repositories/*/_manifests/tags/",
+    prefix: "docker/registry/v2/repositories/",
   };
   const [files] = await bucket.getFiles(getFilesOptions);
   console.log('Files:');
