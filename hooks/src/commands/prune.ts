@@ -58,7 +58,7 @@ async function main(argv): Promise<any> {
   let jobRunning: boolean = false;
   
   const job = new CronJob({
-    cronTime: "0 * * * *",
+    cronTime: "*/20 * * * *",
     onTick: async () => {
       if (jobRunning) {
         console.log("-----> previous prune job is still running, skipping");
@@ -108,7 +108,7 @@ async function pruneOrphanedTags() {
 
         const imageAndTag = tag.split(":");
         const headers = {
-          "Accept": "application/vnd.docker.distribution.manifest.v2+json",
+          "Accept": "application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.index.v1+json",
         };
   
         //console.log(`querying ${tag}`);
