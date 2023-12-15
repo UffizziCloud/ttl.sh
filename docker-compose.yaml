@@ -35,3 +35,14 @@ services:
       NODE_ENV: development
       REGISTRY_URL: http://registry:5000
       REDISCLOUD_URL: redis://redis/
+
+  reaper:
+    build:
+      context: ./hooks
+      dockerfile: Dockerfile.prune
+    environment:
+      NODE_ENV: development
+      REGISTRY_URL: http://registry:5000
+      REDISCLOUD_URL: redis://redis/
+      GCS_BUCKET: uffizzi-ephemeron
+      GCS_KEY_ENCODED: 
