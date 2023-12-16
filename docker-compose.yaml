@@ -12,7 +12,7 @@ services:
       REPLREG_HOST: 'localhost:5000'
       REPLREG_SECRET: deleteme
       GCS_BUCKET: uffizzi-ephemeron
-      GCS_KEY_ENCODED: 
+      GCS_KEY_ENCODED: e30=
     ports:
       - "5000:5000"
 
@@ -35,3 +35,14 @@ services:
       NODE_ENV: development
       REGISTRY_URL: http://registry:5000
       REDISCLOUD_URL: redis://redis/
+
+  pruner:
+    build:
+      context: ./hooks
+      dockerfile: Dockerfile.prune
+    environment:
+      NODE_ENV: development
+      REGISTRY_URL: http://registry:5000
+      REDISCLOUD_URL: redis://redis/
+      GCS_BUCKET: uffizzi-ephemeron
+      GCS_KEY_ENCODED: e30=
