@@ -28,11 +28,7 @@ if (registryURL == null || registryURL == "") {
 }
 
 const client = redis.createClient({url: process.env["REDISCLOUD_URL"]});
-//const smembersAsync = promisify(client.smembers).bind(client);
 const sismemberAsync = promisify(client.sismember).bind(client);
-//const sremAsync = promisify(client.srem).bind(client);
-//const hgetAsync = promisify(client.hget).bind(client);
-//const delAsync = promisify(client.del).bind(client);
 
 const tagRegex = new RegExp("docker/registry/v2/repositories/(.*)/_manifests/tags/(.*)/current/link");
 
@@ -83,9 +79,6 @@ async function main(argv): Promise<any> {
 }
 
 async function pruneOrphanedTags() {
-//  const now = new Date().getTime();
-//  const images = await smembersAsync("current.images");
-//  console.log(`   there are ${images.length} total images to evaluate`);
   const getFilesOptions = {
     matchGlob: "docker/registry/v2/repositories/*/_manifests/tags/*/current/link",
   };
@@ -111,8 +104,6 @@ async function pruneOrphanedTags() {
           "Accept": "application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.index.v1+json",
         };
   
-        //console.log(`querying ${tag}`);
-  
         // Get the manifest from the tag
         const getOptions = {
           method: "HEAD",
@@ -121,6 +112,8 @@ async function pruneOrphanedTags() {
           resolveWithFullResponse: true,
           simple: false,
         }
+
+        console.log(`HTTP HEAD ${getOptions.uri}`);
         const getResponse = await rp(getOptions);
   
         if (getResponse.statusCode == 404) {
@@ -128,8 +121,6 @@ async function pruneOrphanedTags() {
         }
   
         const deleteURI = `${registryURL}/v2/${imageAndTag[0]}/manifests/${getResponse.headers.etag.replace(/"/g,"")}`;
-  
-        console.log(`deleting ${deleteURI}`);
   
         // Remove from the registry
         const options = {
@@ -140,7 +131,8 @@ async function pruneOrphanedTags() {
           simple: false,
         }
   
-        // await rp(options);
+        console.log(`HTTP DELETE ${deleteURI}`);
+        await rp(options);
       }
       else
       {
@@ -148,6 +140,6 @@ async function pruneOrphanedTags() {
       }
     })
     .on('end', () => {
-      return console.log("stream ended.");
+      return console.log("storage stream ended.");
     });
 }
